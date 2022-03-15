@@ -35,7 +35,7 @@ Do the backtracking examples.
 ****************************************
 """)
 
-print("- Define state1: a on b, b on tale, c on table")
+print("- Define state1: a on b, b on table, c on table")
 
 """
 A state is a collection of all of the state variables and their values. Every state variable in the domain should have a value.
