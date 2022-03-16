@@ -18,7 +18,7 @@ def walk(state, a, x, y):
     else:
         return False
 
-
+# disect taxi
 def call_taxi(state, a, x):
     state.loc['taxi'] = x
     return state
@@ -42,10 +42,10 @@ def pay_driver(state, a):
     else:
         return False
 
-def buy_plane_ticket(state, a, ticket_cost):
-    if state.cash[a] >= ticket_cost:
-        state.owe[a] = ticket_cost
-        state.cash[a] = state.cash[a] - ticket_cost
+def buy_plane_ticket(state, a):
+    if state.cash[a] >= state.fly[a]:
+        state.owe[a] = state.fly[a]
+        state.cash[a] = state.cash[a] - state.fly[a]
         state.owe[a] = 0
         return state
     else:
@@ -53,8 +53,7 @@ def buy_plane_ticket(state, a, ticket_cost):
 
 
 def fly_on_plane(state, a, y, z):
-    if state.loc['plane'] == y and state.loc[a] == y:
-        state.loc['plane'] = z
+    if state.loc[a] == y:
         state.loc[a] = z
         return state
     else:
@@ -77,9 +76,9 @@ def travel_by_taxi(state, a, x, y):
         return [('call_taxi', a, x), ('ride_taxi', a, x, y), ('pay_driver', a)]
     return False
 
-def travel_by_plane(state, a, x, y, z, ticket_cost):
-    if state.cash[a] >= taxi_rate(state.dist[x][y] + ticket_cost):
-        return [('buy_plane_ticket', a, ticket_cost), ('call_taxi', a, x), ('ride_taxi', a, x, y), ('pay_driver', a), ('fly_on_plane', a, y, z)]
+def travel_by_plane(state, a, y, z):
+    if state.cash[a] >= state.fly[a]:
+        return [('buy_plane_ticket', a), ('fly_on_plane', a, y, z)]
     return False
 
 pyhop.declare_methods('travel', travel_by_foot, travel_by_taxi, travel_by_plane)
@@ -103,7 +102,8 @@ state3.loc = {'lex':'oxy'}
 state3.cash = {'lex':1000}
 state3.owe = {'lex':0}
 state3.dist = {'oxy':{'airport':25}, 'airport':{'oxy':25}}
-state3.fly = {'airport':{'new_york':500}, 'new_york':{'airport':500}}
+state3.fly = {'lex':500}
+# state3.fly = {'airport':{'new_york':500}, 'new_york':{'airport':500}}
 
 print("""
 ********************************************************************************
