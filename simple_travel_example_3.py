@@ -52,9 +52,9 @@ def buy_plane_ticket(state, a):
         return False
 
 
-def fly_on_plane(state, a, y, z):
+def fly_on_plane(state, a, y):
     if state.loc[a] == y:
-        state.loc[a] = z
+        state.loc[a] = state.fly_to[a]
         return state
     else:
         return False
@@ -76,9 +76,9 @@ def travel_by_taxi(state, a, x, y):
         return [('call_taxi', a, x), ('ride_taxi', a, x, y), ('pay_driver', a)]
     return False
 
-def travel_by_plane(state, a, y, z):
-    if state.cash[a] >= state.fly[a]:
-        return [('buy_plane_ticket', a), ('fly_on_plane', a, y, z)]
+def travel_by_plane(state, a, x, y):
+    if state.flying[a] == True:
+        return [('buy_plane_ticket', a), ('call_taxi', a, x), ('ride_taxi', a, x, y), ('pay_driver', a), ('fly_on_plane', a, y)]
     return False
 
 pyhop.declare_methods('travel', travel_by_foot, travel_by_taxi, travel_by_plane)
@@ -103,6 +103,7 @@ state3.cash = {'lex':1000}
 state3.owe = {'lex':0}
 state3.dist = {'oxy':{'airport':25}, 'airport':{'oxy':25}}
 state3.fly = {'lex':500}
+state3.fly_to = {'lex':'new_york'}
 # state3.fly = {'airport':{'new_york':500}, 'new_york':{'airport':500}}
 
 print("""
@@ -151,13 +152,7 @@ Call pyhop.pyhop(state3,[('travel','lex','oxy','airport', 'new_york, 500)]) with
 """)
 
 print("- If verbose=0 (the default), Pyhop returns the solution but prints nothing.\n")
-pyhop.pyhop(state3, [('travel', 'lex', 'oxy', 'airport', 'new_york', 500)])
+pyhop.pyhop(state3, [('travel', 'lex', 'oxy', 'airport')])
 
 print('- If verbose=1, Pyhop prints the problem and solution, and returns the solution:')
-pyhop.pyhop(state3, [('travel', 'lex', 'oxy', 'airport', 'new_york', 500)], verbose=1)
-
-print('- If verbose=2, Pyhop also prints a note at each recursive call:')
-pyhop.pyhop(state3, [('travel', 'lex', 'oxy', 'airport', 'new_york', 500)], verbose=2)
-
-print('- If verbose=3, Pyhop also prints the intermediate states:')
-pyhop.pyhop(state3, [('travel', 'lex', 'oxy', 'airport', 'new_york', 500)], verbose=3)
+pyhop.pyhop(state3, [('travel', 'lex', 'oxy', 'airport')], verbose = 1)
