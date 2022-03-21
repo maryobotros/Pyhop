@@ -76,6 +76,14 @@ state2.cash = {'sammy': 40}
 state2.owe = {'sammy': 0}
 state2.dist = {'oxy': {'home': 20}, 'home': {'oxy': 20}}
 
+state3 = pyhop.State('state3')
+state3.loc = {'john': 'home'}
+state3.cash = {'john': 1000}
+state3.owe = {'john': 0}
+state3.dist = {'home': {'oxy': 2}, 'oxy': {'home': 2}}
+
+
+
 print("""
 ********************************************************************************
 Call pyhop.pyhop(state1,[('travel','me','home','park')]) with different verbosity levels
@@ -112,3 +120,23 @@ pyhop.pyhop(state2, [('travel', 'sammy', 'oxy', 'home')], verbose=2)
 
 print('- If verbose=3, Pyhop also prints the intermediate states:')
 pyhop.pyhop(state2, [('travel', 'sammy', 'oxy', 'home')], verbose=3)
+
+print("""
+********************************************************************************
+Call pyhop.pyhop(state3,[('travel','john','home','oxy')]) with different verbosity levels
+********************************************************************************
+""")
+
+print("- If verbose=0 (the default), Pyhop returns the solution but prints nothing.\n")
+pyhop.pyhop(state3, [('travel', 'john', 'home', 'oxy')])
+
+print('- If verbose=1, Pyhop prints the problem and solution, and returns the solution:')
+pyhop.pyhop(state3, [('travel', 'john', 'home', 'oxy')], verbose=1)
+
+print('- If verbose=2, Pyhop also prints a note at each recursive call:')
+pyhop.pyhop(state3, [('travel', 'john', 'home', 'oxy')], verbose=2)
+
+print('- If verbose=3, Pyhop also prints the intermediate states:')
+pyhop.pyhop(state3, [('travel', 'john', 'home', 'oxy')], verbose=3)
+
+
