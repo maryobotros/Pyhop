@@ -42,20 +42,17 @@ def pay_driver(state, a):
     else:
         return False
 
+
 def buy_plane_ticket(state, a):
-    if state.cash[a] >= state.fly[a]:
-        state.owe[a] = state.fly[a]
-        state.cash[a] = state.cash[a] - state.fly[a]
-        state.owe[a] = 0
-        return state
+    if state.cash[a] >= state.flight_cost[a]:
+        state.cash[a] -= state.flight_cost[a]
     else:
         return False
 
 
 def fly_on_plane(state, a, y):
-    if state.loc[a] == y:
-        state.loc[a] = state.fly_to[a]
-        return state
+    if state.loc[a] == 'airport':
+        state.loc[a] = y
     else:
         return False
 
@@ -64,6 +61,9 @@ pyhop.declare_operators(walk, call_taxi, ride_taxi, pay_driver, buy_plane_ticket
 print('')
 pyhop.print_operators()
 
+def travel_by_plane(state, a, x, y):
+    if state.cash[a] >= 1000:
+        return[('buy_plane_ticket', a), ('fly_on_plane', a, y)]
 
 def travel_by_foot(state, a, x, y):
     if state.dist[x][y] <= 2:
@@ -76,12 +76,8 @@ def travel_by_taxi(state, a, x, y):
         return [('call_taxi', a, x), ('ride_taxi', a, x, y), ('pay_driver', a)]
     return False
 
-def travel_by_plane(state, a, x, y):
-    if state.flying[a] == True:
-        return [('buy_plane_ticket', a), ('call_taxi', a, x), ('ride_taxi', a, x, y), ('pay_driver', a), ('fly_on_plane', a, y)]
-    return False
 
-pyhop.declare_methods('travel', travel_by_foot, travel_by_taxi, travel_by_plane)
+pyhop.declare_methods('travel', travel_by_plane, travel_by_foot, travel_by_taxi)
 print('')
 pyhop.print_methods()
 
@@ -98,13 +94,18 @@ state2.owe = {'sammy': 0}
 state2.dist = {'oxy': {'home': 20}, 'home': {'oxy': 20}}
 
 state3 = pyhop.State('state3')
-state3.loc = {'lex':'oxy'}
-state3.cash = {'lex':1000}
-state3.owe = {'lex':0}
-state3.dist = {'oxy':{'airport':25}, 'airport':{'oxy':25}}
-state3.fly = {'lex':500}
-state3.fly_to = {'lex':'new_york'}
-# state3.fly = {'airport':{'new_york':500}, 'new_york':{'airport':500}}
+state3.loc = {'john': 'home'}
+state3.cash = {'john': 20}
+state3.owe = {'john': 0}
+state3.dist = {'home': {'oxy': 2}, 'oxy': {'home': 2}}
+
+state4 = pyhop.State('state4')
+state4.loc = {'lex': 'oxy'}
+state4.cash = {'lex': 1000}
+state4.owe = {'lex': 0}
+state4.dist = {'oxy': {'airport': 25}, 'airport': {'oxy': 25}}
+state4.flight_cost = {'lex', 500}
+# state4.fly_to = {'lex': 'new_york'}
 
 print("""
 ********************************************************************************
@@ -144,15 +145,40 @@ print('- If verbose=3, Pyhop also prints the intermediate states:')
 pyhop.pyhop(state2, [('travel', 'sammy', 'oxy', 'home')], verbose=3)
 
 
-
 print("""
 ********************************************************************************
-Call pyhop.pyhop(state3,[('travel','lex','oxy','airport', 'new_york, 500)]) with different verbosity levels
+Call pyhop.pyhop(state3,[('travel','john','home','oxy')]) with different verbosity levels
 ********************************************************************************
 """)
 
 print("- If verbose=0 (the default), Pyhop returns the solution but prints nothing.\n")
-pyhop.pyhop(state3, [('travel', 'lex', 'oxy', 'airport')])
+pyhop.pyhop(state3, [('travel', 'john', 'home', 'oxy')])
 
 print('- If verbose=1, Pyhop prints the problem and solution, and returns the solution:')
-pyhop.pyhop(state3, [('travel', 'lex', 'oxy', 'airport')], verbose = 1)
+pyhop.pyhop(state3, [('travel', 'john', 'home', 'oxy')], verbose=1)
+
+print('- If verbose=2, Pyhop also prints a note at each recursive call:')
+pyhop.pyhop(state3, [('travel', 'john', 'home', 'oxy')], verbose=2)
+
+print('- If verbose=3, Pyhop also prints the intermediate states:')
+pyhop.pyhop(state3, [('travel', 'john', 'home', 'oxy')], verbose=3)
+
+
+print("""
+********************************************************************************
+Call pyhop.pyhop(state4,[('travel','lex','home','new_york')]) with different verbosity levels
+********************************************************************************
+""")
+
+print("- If verbose=0 (the default), Pyhop returns the solution but prints nothing.\n")
+pyhop.pyhop(state4, [('travel', 'lex', 'oxy', 'new_york')])
+
+print('- If verbose=1, Pyhop prints the problem and solution, and returns the solution:')
+pyhop.pyhop(state4, [('travel', 'lex', 'oxy', 'new_york')], verbose=1)
+
+print('- If verbose=2, Pyhop also prints a note at each recursive call:')
+pyhop.pyhop(state4, [('travel', 'lex', 'oxy', 'new_york')], verbose=2)
+
+print('- If verbose=3, Pyhop also prints the intermediate states:')
+pyhop.pyhop(state4, [('travel', 'lex', 'oxy', 'new_york')], verbose=3)
+

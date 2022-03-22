@@ -26,6 +26,8 @@ start.W_wall = position_walls[start.position]['W']
 start.N_wall = position_walls[start.position]['N']
 start.S_wall = position_walls[start.position]['S']
 start.goal = (1, 1)
+start.visited = []
+start.visited.append(start.position)
 start.exit = False
 
 # -------------------------------------------
@@ -42,39 +44,67 @@ goal.S_wall = position_walls[goal.position]['S']
 # Operators
 
 def move_north(state, a):
-    if state.N_wall[a] == 1:
-        prev_position = state.position[a]
-        new_row = prev_position[a][0] - 1
+    if state.N_wall == 1:
+        prev_position = state.position
+        new_row = prev_position[0] - 1
         col = prev_position[1]
-        state.postion[a] = (new_row, col)
-        return state
+        if (new_row, col) not in state.visited:
+            state.position = (new_row, col)
+            state.visited.append((new_row, col))
+            state.E_wall = position_walls[state.position]['E']
+            state.W_wall = position_walls[state.position]['W']
+            state.N_wall = position_walls[state.position]['N']
+            state.S_wall = position_walls[state.position]['S']
+            return state
+        else: return False
     else: return False
 
 def move_south(state, a):
-    if state.S_wall[a] == 1:
-        prev_position = state.position[a]
-        new_row = prev_position[a][0] + 1
+    if state.S_wall == 1:
+        prev_position = state.position
+        new_row = prev_position[0] + 1
         col = prev_position[1]
-        state.postion[a] = (new_row, col)
-        return state
+        if (new_row, col) not in state.visited:
+            state.position = (new_row, col)
+            state.visited.append((new_row, col))
+            state.E_wall = position_walls[state.position]['E']
+            state.W_wall = position_walls[state.position]['W']
+            state.N_wall = position_walls[state.position]['N']
+            state.S_wall = position_walls[state.position]['S']
+            return state
+        else: return False
     else: return False
 
 def move_east(state, a):
-    if state.E_wall[a] == 1:
-        prev_position = state.position[a]
-        new_col = prev_position[a][1] + 1
+    if state.E_wall == 1:
+        prev_position = state.position
+        new_col = prev_position[1] + 1
         row = prev_position[0]
-        state.postion[a] = (row, new_col)
-        return state
+        if (row, new_col) not in state.visited:
+            state.position = (row, new_col)
+            state.visited.append((row, new_col))
+            state.E_wall = position_walls[state.position]['E']
+            state.W_wall = position_walls[state.position]['W']
+            state.N_wall = position_walls[state.position]['N']
+            state.S_wall = position_walls[state.position]['S']
+            return state
+        else: return False
     else: return False
 
 def move_west(state, a):
-    if state.W_wall[a] == 1:
-        prev_position = state.position[a]
-        new_col = prev_position[a][1] - 1
+    if state.W_wall == 1:
+        prev_position = state.position
+        new_col = prev_position[1] - 1
         row = prev_position[0]
-        state.postion[a] = (row, new_col)
-        return state
+        if (row, new_col) not in state.visited:
+            state.position = (row, new_col)
+            state.visited.append((row, new_col))
+            state.E_wall = position_walls[state.position]['E']
+            state.W_wall = position_walls[state.position]['W']
+            state.N_wall = position_walls[state.position]['N']
+            state.S_wall = position_walls[state.position]['S']
+            return state
+        else: return False
     else: return False
 
 pyhop.declare_operators(move_north, move_south, move_east, move_west)
@@ -117,4 +147,4 @@ pyhop.declare_methods('solve', solve_maze)
 # -------------------------------------------
 # Test
 
-pyhop.pyhop(start, [('solve','start')],verbose=3)
+pyhop.pyhop(start, [('solve','start')],verbose=1)

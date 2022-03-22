@@ -139,4 +139,3 @@ pyhop.pyhop(state3, [('travel', 'john', 'home', 'oxy')], verbose=2)
 print('- If verbose=3, Pyhop also prints the intermediate states:')
 pyhop.pyhop(state3, [('travel', 'john', 'home', 'oxy')], verbose=3)
 
-
