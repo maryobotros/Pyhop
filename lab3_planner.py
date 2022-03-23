@@ -1,13 +1,13 @@
-# -------------------------------------------
-# Libraries
-
+# -------------------- Libraries --------------------
 from pyamaze import maze, COLOR
 import pyhop
 
+
+# -------------------- Set maze dimensions --------------------
 r, c = 3, 3
 
-# -------------------------------------------
-# Initialize maze
+
+# -------------------- Initialize maze --------------------
 m=maze(r, c)
 m.CreateMaze(theme=COLOR.light)
 print(m.maze_map)
@@ -16,8 +16,7 @@ m.run()
 position_walls = m.maze_map
 
 
-# -------------------------------------------
-# Set start state
+# -------------------- Set start state --------------------
 start = pyhop.State('start')
 start.position = (r, c)
 start.walls = position_walls[start.position]
@@ -30,8 +29,7 @@ start.visited = []
 start.visited.append(start.position)
 start.exit = False
 
-# -------------------------------------------
-# Set goal state
+# -------------------- Set goal state --------------------
 goal = pyhop.State('goal')
 goal.position = (1, 1)
 goal.walls = position_walls[goal.position]
@@ -40,9 +38,8 @@ goal.W_wall = position_walls[goal.position]['W']
 goal.N_wall = position_walls[goal.position]['N']
 goal.S_wall = position_walls[goal.position]['S']
 
-# -------------------------------------------
-# Operators
 
+# -------------------- Operators --------------------
 def move_north(state, a):
     if state.N_wall == 1:
         prev_position = state.position
@@ -111,9 +108,8 @@ pyhop.declare_operators(move_north, move_south, move_east, move_west)
 print('')
 pyhop.print_operators()
 
-# -------------------------------------------
-# Methods
 
+# -------------------- Methods --------------------
 def go_north(state, a):
     if state.N_wall == 1:
         return [('move_north', a)]
@@ -144,7 +140,6 @@ def solve_maze(state, a):
 
 pyhop.declare_methods('solve', solve_maze)
 
-# -------------------------------------------
-# Test
 
+# -------------------- Test --------------------
 pyhop.pyhop(start, [('solve','start')],verbose=1)
